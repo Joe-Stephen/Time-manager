@@ -2,22 +2,57 @@
 const currentTime = $(".current-time");
 const punchInButton = $(".punch-in");
 const punchOutButton = $(".punch-out");
+const logsList = $(".logs-list");
+const checkInTime = $(".check-in-time");
+
+//array for storing log timings(for calculations and listing)
+const logs = [];
 
 //variable for storing the current state(in/out)
 let state = "";
 
 //setting options for formatting time
-const options = { timeStyle: "short", hour12: true };
+const options = { timeStyle: "medium", hour12: true };
 
 //finding current time
 let timeNow = new Date().toLocaleString("en-US", options);
+
+//function to calculate free time
+const calculateFreeTime = () => {
+  let splittedDate = timeNow.toString().split("");
+  const test =
+    splittedDate.slice(0, 16) + "18:00:00" + splittedDate.slice(24).join("");
+  console.log("patched :", test);
+  const difference = parseInt(Math.abs(timeNow - splittedDate));
+  console.log("diff :", difference);
+};
+
+//milliseconds to time format converter
+function formatMilliseconds(ms) {
+  let date = new Date(ms);
+  let hours = String(date.getUTCHours()).padStart(2, "0");
+  let minutes = String(date.getUTCMinutes()).padStart(2, "0");
+  let seconds = String(date.getUTCSeconds()).padStart(2, "0");
+
+  return `${hours}:${minutes}:${seconds}`;
+}
 
 //function for handling punch-in
 const punchInAlert = () => {
   if (state === "" || state === "out") {
     timeNow = new Date();
-    console.log("in :", timeNow);
+    if (state === "") {
+      console.log("check in : ", timeNow);
+      checkInTime.html(
+        `Check In : ${timeNow.toLocaleString("en-US", options)}`
+      );
+      calculateFreeTime();
+    }
     state = "in";
+    logs.push(timeNow);
+    logsList.append(
+      `<h5>In : ${timeNow.toLocaleString("en-US", options)}</h5>`
+    );
   } else {
     alert("You are already in");
   }
@@ -27,7 +62,11 @@ const punchInAlert = () => {
 const punchOutAlert = () => {
   if (state === "in") {
     timeNow = new Date();
-    console.log("out :", timeNow);
+    state = "out";
+    logs.push(timeNow);
+    logsList.append(
+      `<h5>Out : ${timeNow.toLocaleString("en-US", options)}</h5>`
+    );
   } else {
     alert("You are already out");
   }
