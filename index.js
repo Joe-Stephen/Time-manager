@@ -43,14 +43,12 @@ const calculateFreeTime = () => {
 
   // Calculate the difference in milliseconds
   let difference = endOfWorkDay - now;
-  console.log("diff :", difference);
 
   if (difference > 28800000) {
     difference = difference - 28800000;
   } else if (difference < 28800000) {
     toCompensate = 28800000 - difference;
     difference = toCompensate;
-    console.log("less :", difference);
   } else {
     difference = 0;
   }
@@ -107,11 +105,9 @@ const punchInAlert = () => {
   if (state === "" || state === "out") {
     timeNow = new Date();
     if (state === "") {
-      console.log("check in : ", timeNow);
       checkInTime.html(
         `Check In : ${timeNow.toLocaleString("en-US", options)}`
       );
-      // totalFreetime.html(`Freetime : ${60} minutes and ${0} seconds left`);
       totalFreetime.html(`Free time left : ${60} minutes and ${0} seconds`);
       calculateFreeTime();
     }
@@ -132,14 +128,10 @@ const punchInAlert = () => {
         checkInLogs[checkInLogs.length - 1]
     );
     if (outTime > 0) {
-      console.log("out time :", outTime);
-      console.log("freetime balance before:", freetimeBalance);
       const outTimeConverted = formatMilliseconds(outTime);
       freetimeBalance -= outTime;
-      console.log("freetime balance left:", freetimeBalance);
       if (freetimeBalance >= 0) {
         adjustedFreetime = adjustFreetime(freetimeBalance);
-        console.log("adjusted freetime :", adjustedFreetime);
       } else {
         adjustedFreetime = "0 minutes and 0 seconds";
       }
@@ -156,22 +148,12 @@ const punchOutAlert = () => {
     timeNow = new Date();
     state = "out";
     checkOutLogs.push(timeNow);
-    // logsTable.append(
-    //   `<tr>
-    //   <td>-</td>
-    //   <td>${checkOutLogs.pop().toLocaleString("en-US", options)}</td>
-    //   <td>-</td>
-    //   </tr>`
-    // );
-    console.log("logs :", checkInLogs);
     const inTime = Math.abs(
       checkOutLogs[checkOutLogs.length - 1] -
         checkInLogs[checkInLogs.length - 1]
     );
-    console.log("in time :", inTime);
     workedTime += inTime;
     const inTimeConverted = formatMilliseconds(inTime);
-    console.log("in time converted :", inTimeConverted);
     $(".logs-table tr:last").replaceWith(`<tr>
       <td>${checkInLogs[checkInLogs.length - 1].toLocaleString(
         "en-US",
