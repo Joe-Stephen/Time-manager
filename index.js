@@ -8,10 +8,13 @@ const totalFreetime = $(".total-freetime");
 const compensatoryTime = $(".total-compensatory-time");
 const estimatedCheckoutTime = $(".estimated-check-out-time");
 const logsTable = $(".logs-table");
+const totalLoggedInTime = $(".total-loggedIn-time");
 let freetimeBalance = 3600000;
+let adjustedFreetime;
 
 //variable declarations for common use
 let toCompensate = null;
+let workedTime = 0;
 
 //array for storing log timings(for calculations and listing)
 const checkInLogs = [];
@@ -79,7 +82,7 @@ function formatMilliseconds(ms) {
   return `${hours}:${minutes}:${seconds}`;
 }
 
-//freetime adjusting function
+//freetime adjuster
 function adjustFreetime(ms) {
   let date = new Date(ms);
   let hours = String(date.getUTCHours()).padStart(2, "0");
@@ -87,6 +90,16 @@ function adjustFreetime(ms) {
   let seconds = String(date.getUTCSeconds()).padStart(2, "0");
 
   return `${minutes} minutes and ${seconds} seconds`;
+}
+
+//worktime adjuster
+function adjustWorktime(ms) {
+  let date = new Date(ms);
+  let hours = String(date.getUTCHours()).padStart(2, "0");
+  let minutes = String(date.getUTCMinutes()).padStart(2, "0");
+  let seconds = String(date.getUTCSeconds()).padStart(2, "0");
+
+  return `${hours} hours, ${minutes} minutes and ${seconds} seconds`;
 }
 
 //function for handling punch-in
@@ -118,15 +131,20 @@ const punchInAlert = () => {
       checkOutLogs[checkOutLogs.length - 1] -
         checkInLogs[checkInLogs.length - 1]
     );
-    console.log("out time :", outTime);
-    console.log("freetime balance :", freetimeBalance);
-    const outTimeConverted = formatMilliseconds(outTime);
-    freetimeBalance = freetimeBalance - outTime;
-    console.log("adjusted freetime balance :", freetimeBalance);
-
-    // const adjustedFreetime = adjustFreetime(freetimeBalance);
-    // console.log("adjusted freetime :", adjustedFreetime);
-    // totalFreetime.html(`Free time left : ${adjustedFreetime}`);
+    if (outTime > 0) {
+      console.log("out time :", outTime);
+      console.log("freetime balance before:", freetimeBalance);
+      const outTimeConverted = formatMilliseconds(outTime);
+      freetimeBalance -= outTime;
+      console.log("freetime balance left:", freetimeBalance);
+      if (freetimeBalance >= 0) {
+        adjustedFreetime = adjustFreetime(freetimeBalance);
+        console.log("adjusted freetime :", adjustedFreetime);
+      } else {
+        adjustedFreetime = "0 minutes and 0 seconds";
+      }
+      totalFreetime.html(`Free time left : ${adjustedFreetime}`);
+    }
   } else {
     alert("You are already in");
   }
@@ -151,6 +169,7 @@ const punchOutAlert = () => {
         checkInLogs[checkInLogs.length - 1]
     );
     console.log("in time :", inTime);
+    workedTime += inTime;
     const inTimeConverted = formatMilliseconds(inTime);
     console.log("in time converted :", inTimeConverted);
     $(".logs-table tr:last").replaceWith(`<tr>
@@ -164,6 +183,9 @@ const punchOutAlert = () => {
       )}</td>
       <td>${inTimeConverted}</td>
       </tr>`);
+    totalLoggedInTime.html(
+      `Total logged-in time : ${adjustWorktime(workedTime)}`
+    );
   } else {
     alert("You are already out");
   }
