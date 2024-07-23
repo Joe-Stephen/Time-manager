@@ -29,6 +29,17 @@ const options = { timeStyle: "medium", hour12: true };
 //finding current time
 let timeNow = new Date().toLocaleString("en-US", options);
 
+//compensatory time adjuster
+function adjustCompensatoryTime(ms) {
+  let date = new Date(ms);
+  let hours = String(date.getUTCHours()).padStart(2, "0");
+  let minutes = String(date.getUTCMinutes()).padStart(2, "0");
+  let seconds = String(date.getUTCSeconds()).padStart(2, "0");
+  compensatoryTime.html(
+    `Total compensatory time : ${hours} hours, ${minutes} minutes and ${seconds} seconds`
+  );
+}
+
 const calculateFreeTime = () => {
   // Parse the current time as a Date object
   const now = new Date();
@@ -57,9 +68,10 @@ const calculateFreeTime = () => {
   const hours = Math.floor(difference / (1000 * 60 * 60));
   const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
   if (toCompensate) {
-    compensatoryTime.html(
-      `Total compensatory time : ${hours} hours and ${minutes} minutes`
-    );
+    // compensatoryTime.html(
+    //   `Total compensatory time : ${hours} hours and ${minutes} minutes`
+    // );
+    adjustCompensatoryTime(toCompensate);
   } else {
     totalFreetime.html(
       `Total freetime : ${hours} hours and ${minutes} minutes`
@@ -134,6 +146,8 @@ const punchInAlert = () => {
         adjustedFreetime = adjustFreetime(freetimeBalance);
       } else {
         adjustedFreetime = "0 minutes and 0 seconds";
+        toCompensate += Math.abs(freetimeBalance);
+        adjustCompensatoryTime(toCompensate);
       }
       totalFreetime.html(`Free time left : ${adjustedFreetime}`);
     }
