@@ -7,16 +7,27 @@
     <title>Document</title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <h1 id="time"></h1>
     <h3 class="current-time"></h3>
-    <h3 class="check-in-time">Check In :</h3>
-    <h3 class="freetime-balance"> Freetime left :</h3>
-    <h3 class="check-out-time">Estimated Check Out :</h3>
+    <h3 class="check-in-time"></h3>
+    <h3 class="total-freetime"></h3>
+    <h3 class="total-compensatory-time"></h3>
+    <h3 class="estimated-check-out-time"></h3>
     <button class="punch-in">Punch In</button>
     <button class="punch-out">Punch Out</button>
+    <div class="logs-table-container">
+        <table class="logs-table">
+            <tr>
+                <th>Log In</th>
+                <th>Log Out</th>
+                <th>In Time</th>
+            </tr>
+        </table>
+    </div>
     <div class="logs-list"></div>
     <script src="index.js"></script>
 </body>
