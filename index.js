@@ -9,12 +9,15 @@ const compensatoryTime = $(".total-compensatory-time");
 const estimatedCheckoutTime = $(".estimated-check-out-time");
 const logsTable = $(".logs-table");
 const totalLoggedInTime = $(".total-loggedIn-time");
-let freetimeBalance = 3600000;
+// let freetimeBalance = 3600000;
+let freetimeBalance = 5000;
 let adjustedFreetime;
 
 //variable declarations for common use
-let toCompensate = null;
+let toCompensate = 0;
 let workedTime = 0;
+let checkoutHour;
+let checkoutMinute;
 
 //array for storing log timings(for calculations and listing)
 const checkInLogs = [];
@@ -35,6 +38,9 @@ function adjustCompensatoryTime(ms) {
   let hours = String(date.getUTCHours()).padStart(2, "0");
   let minutes = String(date.getUTCMinutes()).padStart(2, "0");
   let seconds = String(date.getUTCSeconds()).padStart(2, "0");
+  checkoutHour = 6 + date.getUTCHours();
+  checkoutMinute = 0 + date.getUTCMinutes();
+  adjustCheckoutTime();
   compensatoryTime.html(
     `Total compensatory time : ${hours} hours, ${minutes} minutes and ${seconds} seconds`
   );
@@ -67,19 +73,16 @@ const calculateFreeTime = () => {
   // Convert the difference to hours and minutes
   const hours = Math.floor(difference / (1000 * 60 * 60));
   const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-  if (toCompensate) {
-    // compensatoryTime.html(
-    //   `Total compensatory time : ${hours} hours and ${minutes} minutes`
-    // );
+  checkoutHour = 6 + hours;
+  checkoutMinute = 0 + minutes;
+  if (toCompensate !== 0) {
     adjustCompensatoryTime(toCompensate);
   } else {
     totalFreetime.html(
       `Total freetime : ${hours} hours and ${minutes} minutes`
     );
   }
-  estimatedCheckoutTime.html(
-    `Estimated check out : ${6 + hours}:${0 + minutes} PM`
-  );
+  adjustCheckoutTime();
 };
 
 //milliseconds to time format converter
@@ -93,13 +96,29 @@ function formatMilliseconds(ms) {
 }
 
 //freetime adjuster
-function adjustFreetime(ms) {
+function adjustFreetime(ms = 5000) {
+  // console.log("ms :", ms);
   let date = new Date(ms);
   let hours = String(date.getUTCHours()).padStart(2, "0");
   let minutes = String(date.getUTCMinutes()).padStart(2, "0");
   let seconds = String(date.getUTCSeconds()).padStart(2, "0");
+  // console.log("hours :", hours);
+  // console.log("minutes :", minutes);
+  // console.log("seconds :", seconds);
+  totalFreetime.html(
+    `Free time left : ${minutes} minutes and ${seconds} seconds`
+  );
 
   return `${minutes} minutes and ${seconds} seconds`;
+}
+
+//checkout time adjuster
+function adjustCheckoutTime() {
+  estimatedCheckoutTime.html(
+    `Estimated check out : ${
+      checkoutHour < 10 ? "0" + checkoutHour : checkoutHour
+    }:${checkoutMinute < 10 ? "0" + checkoutMinute : checkoutMinute} PM`
+  );
 }
 
 //worktime adjuster
@@ -108,7 +127,6 @@ function adjustWorktime(ms) {
   let hours = String(date.getUTCHours()).padStart(2, "0");
   let minutes = String(date.getUTCMinutes()).padStart(2, "0");
   let seconds = String(date.getUTCSeconds()).padStart(2, "0");
-
   return `${hours} hours, ${minutes} minutes and ${seconds} seconds`;
 }
 
@@ -120,7 +138,8 @@ const punchInAlert = () => {
       checkInTime.html(
         `Check In : ${timeNow.toLocaleString("en-US", options)}`
       );
-      totalFreetime.html(`Free time left : ${60} minutes and ${0} seconds`);
+      adjustFreetime(freetimeBalance);
+      // totalFreetime.html(`Free time left : ${60} minutes and ${0} seconds`);
       calculateFreeTime();
     }
     state = "in";
