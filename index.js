@@ -9,8 +9,8 @@ const compensatoryTime = $(".total-compensatory-time");
 const estimatedCheckoutTime = $(".estimated-check-out-time");
 const logsTable = $(".logs-table");
 const totalLoggedInTime = $(".total-loggedIn-time");
-// let freetimeBalance = 3600000;
-let freetimeBalance = 5000;
+let freetimeBalance = 3600000;
+// let freetimeBalance = 5000;
 let adjustedFreetime;
 
 //variable declarations for common use
@@ -96,15 +96,11 @@ function formatMilliseconds(ms) {
 }
 
 //freetime adjuster
-function adjustFreetime(ms = 5000) {
-  // console.log("ms :", ms);
+function adjustFreetime(ms = 3600000) {
   let date = new Date(ms);
   let hours = String(date.getUTCHours()).padStart(2, "0");
   let minutes = String(date.getUTCMinutes()).padStart(2, "0");
   let seconds = String(date.getUTCSeconds()).padStart(2, "0");
-  // console.log("hours :", hours);
-  // console.log("minutes :", minutes);
-  // console.log("seconds :", seconds);
   totalFreetime.html(
     `Free time left : ${minutes} minutes and ${seconds} seconds`
   );
@@ -139,7 +135,7 @@ const punchInAlert = () => {
         `Check In : ${timeNow.toLocaleString("en-US", options)}`
       );
       adjustFreetime(freetimeBalance);
-      // totalFreetime.html(`Free time left : ${60} minutes and ${0} seconds`);
+      totalFreetime.html(`Free time left : ${60} minutes and ${0} seconds`);
       calculateFreeTime();
     }
     state = "in";
