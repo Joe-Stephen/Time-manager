@@ -5,7 +5,7 @@ import morgan from "morgan";
 import userRouter from "./routers/userRoutes";
 dotenv.config();
 import { connectDB } from "./configs/connectDB";
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 
