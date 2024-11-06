@@ -1,15 +1,12 @@
 import React from "react";
-import Header from "./components/Header.tsx";
-import Footer from "./components/Footer.tsx";
-import Body from "./components/Body.tsx";
-import Login from "./components/Login.tsx";
+import Punching from "./components/Punching";
 
-const App = () => {
+function App() {
   return (
-    <div>
-      <Login />
+    <div className="App">
+      <Punching />
     </div>
   );
-};
+}
 
 export default App;
