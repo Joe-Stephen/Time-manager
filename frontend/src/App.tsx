@@ -1,11 +1,26 @@
 import React from "react";
-import Punching from "./components/Punching";
+import { Provider } from "react-redux";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import store from "./utils/store";
+import Body from "./components/Body";
+import Head from "./components/Head";
+
+const appRouter = createBrowserRouter([
+  {
+    path: "/",
+    element: <Body />,
+    children: [
+      // { path: "/", element: <Punching /> },
+    ],
+  },
+]);
 
 function App() {
   return (
-    <div className="App">
-      <Punching />
-    </div>
+    <Provider store={store}>
+      <Head />
+      <RouterProvider router={appRouter} />
+    </Provider>
   );
 }
 
