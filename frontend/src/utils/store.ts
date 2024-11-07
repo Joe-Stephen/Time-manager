@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
+import logReducer from "./slices/logSlice";
 
 const appStore = configureStore({
-  reducer: {},
+  reducer: { log: logReducer },
 });
 export default appStore;
