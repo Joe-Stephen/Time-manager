@@ -4,6 +4,7 @@ import MaterialTable from "../utils/Table";
 import calculateEstimatedLogOutTime from "../utils/helpers";
 import { useDispatch, useSelector } from "react-redux";
 import { resetInitialLogin, setInitialLogin } from "../utils/slices/logSlice";
+import { toggleLoggedInStatus } from "../utils/slices/appSlice";
 
 const Body = () => {
   //mock data
@@ -14,17 +15,29 @@ const Body = () => {
   ];
   const dispatch = useDispatch();
   const lastLoginDate = useSelector((store: any) => store.log.lastLoginDate);
+  const isLoggedIn = useSelector((store: any) => store.app.isLoggedIn);
 
   //function to handle the log in
   const logInHandler = () => {
-    if (lastLoginDate && !moment().isSame(moment(lastLoginDate), "day")) {
-      dispatch(resetInitialLogin());
+    if (isLoggedIn) {
+      alert("You are already logged in.");
     } else {
-      dispatch(setInitialLogin({ lastLoginDate: moment() }));
+      if (lastLoginDate && !moment().isSame(moment(lastLoginDate), "day")) {
+        dispatch(resetInitialLogin());
+      } else {
+        dispatch(setInitialLogin({ lastLoginDate: moment() }));
+      }
+      dispatch(toggleLoggedInStatus());
     }
   };
   //function to handle the log out
-  const logOutHandler = () => {};
+  const logOutHandler = () => {
+    if (!isLoggedIn) {
+      alert("You are already logged out.");
+    } else {
+      dispatch(toggleLoggedInStatus());
+    }
+  };
   return (
     <>
       <div className="type-container bg-emerald-600 p-2 rounded-md flex justify-center">
@@ -37,7 +50,10 @@ const Body = () => {
         >
           Log In
         </button>
-        <button className="text-md p-2 m-2 bg-yellow-500 rounded-lg hover:bg-red-600">
+        <button
+          onClick={() => logOutHandler()}
+          className="text-md p-2 m-2 bg-yellow-500 rounded-lg hover:bg-red-600"
+        >
           Log Out
         </button>
       </div>
