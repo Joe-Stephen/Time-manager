@@ -1,9 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
-import moment from "moment";
+import moment, { Moment } from "moment";
+
+interface LogState {
+  initialLogin: boolean;
+  lastLoginDate: string | null;
+  lastLoginTime: Moment | null;
+}
+
+const initialState: LogState = {
+  initialLogin: false,
+  lastLoginDate: null,
+  lastLoginTime: null,
+};
 
 const logSlice = createSlice({
   name: "initialLogIn",
-  initialState: { initialLogin: false, lastLoginDate: null },
+  initialState,
   reducers: {
     setInitialLogin: (state, action) => {
       if (!state.lastLoginDate) {
@@ -15,6 +27,9 @@ const logSlice = createSlice({
     },
     resetInitialLogin: (state) => {
       state.initialLogin = false;
+    },
+    setLastLoginTime: (state) => {
+      state.lastLoginTime = moment();
     },
   },
 });
