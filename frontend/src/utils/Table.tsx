@@ -21,8 +21,11 @@ const MaterialTable: React.FC<MaterialTableProps> = ({ data }) => {
   }
 
   return (
-    <TableContainer component={Paper}>
-      <Table>
+    <TableContainer
+      component={Paper}
+      style={{ maxHeight: 300, overflowY: "auto" }}
+    >
+      <Table stickyHeader>
         <TableHead>
           <TableRow>
             {Object.keys(data[0]).map((key) => (
