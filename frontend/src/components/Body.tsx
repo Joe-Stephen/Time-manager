@@ -25,6 +25,8 @@ const Body = () => {
   const initialLogin = useSelector((store: any) => store.log.initialLogin);
   const isLoggedIn = useSelector((store: any) => store.app.isLoggedIn);
   const logData = useSelector((store: any) => store.log.logData);
+  const totalInTime = useSelector((store: any) => store.log.totalInTime);
+  const totalOutTime = useSelector((store: any) => store.log.totalOutTime);
 
   //function to handle the log in
   const logInHandler = () => {
@@ -72,20 +74,30 @@ const Body = () => {
       </div>
       <div className="p-2 m-2 bg-gray-400 rounded-md flex flex-col justify-center">
         <h1 className="underline underline-offset-4">Timings</h1>
-        {lastLoginDate ? (
-          <h2>Log in time: {moment(lastLoginDate).format("LTS").toString()}</h2>
-        ) : (
-          <h2>Log in time:</h2>
-        )}
-        {lastLoginDate ? (
-          <h2>
-            Estimated log out time:
-            {moment(lastLoginDate).add(8, "hour").format("LTS").toString()}
-          </h2>
-        ) : (
-          <h2>Estimated log out time:</h2>
-        )}
-        <h2>Total in-time:</h2>
+        <h2>
+          Log in time :{" "}
+          {lastLoginDate
+            ? moment(lastLoginDate).format("LTS").toString()
+            : "Please log in"}{" "}
+        </h2>
+        <h2>
+          Estimated log out time :{" "}
+          {lastLoginDate
+            ? moment(lastLoginDate).add(8, "hour").format("LTS").toString()
+            : "Please log in"}{" "}
+        </h2>
+        <h2>
+          Total in-time :{" "}
+          {totalInTime
+            ? moment.utc(totalInTime * 1000).format("HH:mm:ss")
+            : "00:00:00"}{" "}
+        </h2>
+        <h2>
+          Total out-time :{" "}
+          {totalOutTime
+            ? moment.utc(totalOutTime * 1000).format("HH:mm:ss")
+            : "00:00:00"}{" "}
+        </h2>
       </div>
       <div className="p-2 m-2 bg-gray-400 rounded-md flex flex-col justify-center">
         <h1 className="underline underline-offset-4">Logs</h1>

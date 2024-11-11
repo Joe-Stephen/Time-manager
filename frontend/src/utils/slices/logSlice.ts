@@ -7,6 +7,7 @@ interface LogState {
   lastLoginTime: Moment | null;
   logData: [] | any;
   totalInTime: number;
+  totalOutTime: number;
 }
 
 const initialState: LogState = {
@@ -15,6 +16,7 @@ const initialState: LogState = {
   lastLoginTime: null,
   logData: [],
   totalInTime: 0,
+  totalOutTime: 0,
 };
 
 const logSlice = createSlice({
@@ -39,6 +41,19 @@ const logSlice = createSlice({
     },
     pushLogInTime: (state, action) => {
       state.logData.push({ In: action.payload.format("LTS").toString() });
+      if (state.logData.length >= 2) {
+        const outTime = moment(
+          state.logData[state.logData.length - 2].Out,
+          "hh:mm:ss A"
+        );
+        const inTime = moment(action.payload);
+        const hourDifference = outTime.diff(inTime, "hours");
+        const minuteDifference = outTime.diff(inTime, "minutes") % 60;
+        const secondDifference = outTime.diff(inTime, "seconds") % 60;
+        //adding to total out-time
+        const totalSecondsDifference = inTime.diff(outTime, "seconds");
+        state.totalOutTime += totalSecondsDifference;
+      }
     },
     pushLogOutTime: (state, action) => {
       state.logData[state.logData.length - 1].Out = action.payload
@@ -55,6 +70,9 @@ const logSlice = createSlice({
       state.logData[
         state.logData.length - 1
       ].InTime = `${hourDifference}:${minuteDifference}:${secondDifference}`;
+      //adding to total in-time
+      const totalSecondsDifference = outTime.diff(inTime, "seconds");
+      state.totalInTime += totalSecondsDifference;
     },
     resetLogData: (state) => {
       state.logData = [];
