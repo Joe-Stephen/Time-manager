@@ -27,6 +27,9 @@ const Body = () => {
   const logData = useSelector((store: any) => store.log.logData);
   const totalInTime = useSelector((store: any) => store.log.totalInTime);
   const totalOutTime = useSelector((store: any) => store.log.totalOutTime);
+  const estimatedLogOutTime = useSelector(
+    (store: any) => store.log.estimatedLogoutTime
+  );
 
   //function to handle the log in
   const logInHandler = () => {
@@ -41,6 +44,8 @@ const Body = () => {
       }
       dispatch(pushLogInTime(moment()));
       dispatch(toggleLoggedInStatus());
+      if (totalOutTime > 3600) {
+      }
     }
   };
 
@@ -81,10 +86,14 @@ const Body = () => {
             : "Please log in"}{" "}
         </h2>
         <h2>
-          Estimated log out time :{" "}
-          {lastLoginDate
-            ? moment(lastLoginDate).add(8, "hour").format("LTS").toString()
-            : "Please log in"}{" "}
+          Estimated log out time:{" "}
+          {estimatedLogOutTime
+            ? totalOutTime > 3600
+              ? moment(estimatedLogOutTime)
+                  .add(totalOutTime - 3600, "seconds")
+                  .format("LTS")
+              : moment(estimatedLogOutTime).format("LTS")
+            : "Please log in"}
         </h2>
         <h2>
           Total in-time :{" "}

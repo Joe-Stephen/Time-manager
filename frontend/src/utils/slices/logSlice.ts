@@ -3,20 +3,24 @@ import moment, { Moment } from "moment";
 
 interface LogState {
   initialLogin: boolean;
+  estimatedLogoutTime: Moment | null;
   lastLoginDate: string | null;
   lastLoginTime: Moment | null;
   logData: [] | any;
   totalInTime: number;
   totalOutTime: number;
+  // toCompensate: number;
 }
 
 const initialState: LogState = {
   initialLogin: false,
+  estimatedLogoutTime: null,
   lastLoginDate: null,
   lastLoginTime: null,
   logData: [],
   totalInTime: 0,
   totalOutTime: 0,
+  // toCompensate: 0,
 };
 
 const logSlice = createSlice({
@@ -27,6 +31,7 @@ const logSlice = createSlice({
       if (!state.lastLoginDate) {
         state.initialLogin = true;
         state.lastLoginDate = action.payload;
+        state.estimatedLogoutTime = moment(action.payload).add(8, "hour");
       } else if (
         !moment(state.lastLoginDate).isSame(moment(action.payload), "day")
       ) {
