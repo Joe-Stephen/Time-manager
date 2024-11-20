@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   pushLogInTime,
   pushLogOutTime,
-  resetInitialLogin,
   resetLogData,
   setInitialLogin,
 } from "../utils/slices/logSlice";
