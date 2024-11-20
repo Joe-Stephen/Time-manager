@@ -52,9 +52,6 @@ const logSlice = createSlice({
           "hh:mm:ss A"
         );
         const inTime = moment(action.payload);
-        const hourDifference = outTime.diff(inTime, "hours");
-        const minuteDifference = outTime.diff(inTime, "minutes") % 60;
-        const secondDifference = outTime.diff(inTime, "seconds") % 60;
         //adding to total out-time
         const totalSecondsDifference = inTime.diff(outTime, "seconds");
         state.totalOutTime += totalSecondsDifference;
