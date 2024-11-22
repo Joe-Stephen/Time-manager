@@ -96,7 +96,9 @@ const logSlice = createSlice({
       state.initialLogin = false;
       state.totalInTime = 0;
       state.totalOutTime = 0;
+      state.lastLoginDate = null;
       localStorage.removeItem("logData");
+      localStorage.removeItem("lastLoginDate");
     },
   },
 });
