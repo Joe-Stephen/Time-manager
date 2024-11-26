@@ -92,13 +92,15 @@ const logSlice = createSlice({
       localStorage.setItem("totalInTime", state.totalInTime.toString());
     },
     resetLogData: (state) => {
-      state.logData = [];
-      state.initialLogin = false;
       state.totalInTime = 0;
       state.totalOutTime = 0;
+      state.logData = [];
+      state.initialLogin = false;
       state.lastLoginDate = null;
       localStorage.removeItem("logData");
       localStorage.removeItem("lastLoginDate");
+      localStorage.removeItem("totalInTime");
+      localStorage.removeItem("totalOutTime");
     },
   },
 });
