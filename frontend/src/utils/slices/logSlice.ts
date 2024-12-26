@@ -14,13 +14,20 @@ interface LogState {
 
 const initialState: LogState = {
   initialLogin: false,
-  estimatedLogoutTime: null,
-  lastLoginDate: null,
+  estimatedLogoutTime: localStorage.getItem("estimatedLogoutTime")
+    ? moment(localStorage.getItem("estimatedLogoutTime"))
+    : null,
+  lastLoginDate: localStorage.getItem("lastLoginDate") || null,
   lastLoginTime: null,
-  logData: [],
-  totalInTime: 0,
-  totalOutTime: 0,
-  // toCompensate: 0,
+  logData: localStorage.getItem("logData")
+    ? JSON.parse(localStorage.getItem("logData") ?? "[]")
+    : [],
+  totalInTime: localStorage.getItem("totalInTime")
+    ? parseInt(localStorage.getItem("totalInTime") ?? "0", 10)
+    : 0,
+  totalOutTime: localStorage.getItem("totalOutTime")
+    ? parseInt(localStorage.getItem("totalOutTime") ?? "0", 10)
+    : 0,
 };
 
 const logSlice = createSlice({
@@ -32,17 +39,19 @@ const logSlice = createSlice({
         state.initialLogin = true;
         state.lastLoginDate = action.payload;
         state.estimatedLogoutTime = moment(action.payload).add(8, "hour");
+        // Save to localStorage
+        if (state.lastLoginDate) {
+          localStorage.setItem("lastLoginDate", state.lastLoginDate);
+        }
+        localStorage.setItem(
+          "estimatedLogoutTime",
+          state.estimatedLogoutTime.toISOString()
+        );
       } else if (
         !moment(state.lastLoginDate).isSame(moment(action.payload), "day")
       ) {
         state.initialLogin = true;
       }
-    },
-    resetInitialLogin: (state) => {
-      state.initialLogin = false;
-    },
-    setLastLoginTime: (state) => {
-      state.lastLoginTime = moment();
     },
     pushLogInTime: (state, action) => {
       state.logData.push({ In: action.payload.format("LTS").toString() });
@@ -56,6 +65,9 @@ const logSlice = createSlice({
         const totalSecondsDifference = inTime.diff(outTime, "seconds");
         state.totalOutTime += totalSecondsDifference;
       }
+      // Save logData to localStorage
+      localStorage.setItem("logData", JSON.stringify(state.logData));
+      localStorage.setItem("totalOutTime", state.totalOutTime.toString());
     },
     pushLogOutTime: (state, action) => {
       state.logData[state.logData.length - 1].Out = action.payload
@@ -72,19 +84,30 @@ const logSlice = createSlice({
       state.logData[
         state.logData.length - 1
       ].InTime = `${hourDifference}:${minuteDifference}:${secondDifference}`;
-      //adding to total in-time
+      // Adding to total in-time
       const totalSecondsDifference = outTime.diff(inTime, "seconds");
       state.totalInTime += totalSecondsDifference;
+      // Save to localStorage
+      localStorage.setItem("logData", JSON.stringify(state.logData));
+      localStorage.setItem("totalInTime", state.totalInTime.toString());
     },
     resetLogData: (state) => {
+      state.totalInTime = 0;
+      state.totalOutTime = 0;
       state.logData = [];
+      state.initialLogin = false;
+      state.lastLoginDate = null;
+      localStorage.removeItem("logData");
+      localStorage.removeItem("lastLoginDate");
+      localStorage.removeItem("totalInTime");
+      localStorage.removeItem("totalOutTime");
     },
   },
 });
 
 export const {
   setInitialLogin,
-  resetInitialLogin,
+  // resetInitialLogin,
   pushLogInTime,
   pushLogOutTime,
   resetLogData,
