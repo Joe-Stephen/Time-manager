@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import store from "./utils/store";
 import Body from "./components/Body";
 import Head from "./components/Head";
+import MainLayout from "./components/Layout/MainLayout";
 
 const appRouter = createBrowserRouter([
   {
@@ -19,7 +20,9 @@ function App() {
   return (
     <Provider store={store}>
       <Head />
-      <RouterProvider router={appRouter} />
+      <MainLayout>
+        <RouterProvider router={appRouter} />
+      </MainLayout>
     </Provider>
   );
 }
