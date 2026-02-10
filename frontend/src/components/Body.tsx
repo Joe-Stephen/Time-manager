@@ -34,15 +34,8 @@ const StatCard = ({ title, value, icon, color }: any) => (
 
 const Body = () => {
   //mock data
-  const data = [
-    { In: "10:00 AM", Out: "10:30 AM", "In-Time": "00:30" },
-    { In: "11:00 AM", Out: "11:30 AM", "In-Time": "00:30" },
-    { In: "01:00 PM", Out: "01:30 PM", "In-Time": "00:30" },
-  ];
-
   const dispatch = useDispatch();
   const lastLoginDate = useSelector((store: any) => store.log.lastLoginDate);
-  const initialLogin = useSelector((store: any) => store.log.initialLogin);
   const isLoggedIn = useSelector((store: any) => store.app.isLoggedIn);
   const logData = useSelector((store: any) => store.log.logData);
   const totalInTime = useSelector((store: any) => store.log.totalInTime);
